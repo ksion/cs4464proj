@@ -1,0 +1,38 @@
+﻿body {
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif !important;
+}
+
+header {
+    background: url("../img/marquee-stars.svg") #074e68;
+    background-size: cover;
+    padding: 1.5em 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+    font-weight: 300;
+}
+
+#main-content {
+    margin: 3em 0 1.5em;
+}
+
+.hide {
+    display: none;
+}
+
+.panel.entry:nth-child(3n+1) { /*purple ish*/
+    border-color: rgb(142, 142, 168);
+    background: rgb(198, 198, 231);
+}
+
+.panel.entry:nth-child(3n+2) { /*green ish*/
+    border-color: rgb(125, 162, 125);
+    background: rgb(197, 238, 197);
+}
+
+.panel.entry:nth-child(3n+3) { /*pink ish*/
+    border-color: rgb(211, 99, 99);
+    background: rgb(253, 200, 200);
+}
+
