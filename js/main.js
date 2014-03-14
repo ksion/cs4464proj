@@ -104,16 +104,19 @@ function try_tag_search(entry) {
 }
 
 function try_title_search(entry) {
-    var title = entry.title;
+    var titleWords = (entry.title).split(" ");
 
-    if (breakfast_words.indexOf(title.toLowerCase())) 
-        add_entry_to_feed(entry, breakfast_feed, ".bPanel");
+    titleWords.forEach(function(word) {
+        if (breakfast_words.indexOf(word.toLowerCase()) != -1) 
+            add_entry_to_feed(entry, breakfast_feed, ".bPanel");
 
-    if (lunch_words.indexOf(title.toLowerCase()))
-        add_entry_to_feed(entry, lunch_feed, ".lPanel");
+        if (lunch_words.indexOf(word.toLowerCase()) != -1)
+            add_entry_to_feed(entry, lunch_feed, ".lPanel");
 
-    if (dinner_words.indexOf(title.toLowerCase()))
-        add_entry_to_feed(entry, dinner_feed, ".dPanel");
+        if (dinner_words.indexOf(word.toLowerCase()) != -1)
+            add_entry_to_feed(entry, dinner_feed, ".dPanel");
+
+    });
 }
 
 $(document).ready(function () {
