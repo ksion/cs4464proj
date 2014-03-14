@@ -1,65 +1,106 @@
 <!doctype html>
 <html class="no-js" lang="en">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Made You Feed | Keanna & Nisha Site</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/foundation.css" />
-    <link rel="stylesheet" href="css/jquery.zrssfeed.css" />
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
-    
-    <script src="js/vendor/jquery.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+    <script type="text/javascript" src="js/vendor/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-      
+    <script src="http://cdn.embed.ly/jquery.embedly-3.1.1.min.js"></script>
+
     <script type="text/javascript">
         google.load("feeds", "1");
     </script>
 
-    <script src="js/main.js"></script>
-    <script src="js/vendor/modernizr.js"></script>
-  </head>
-  <body>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/vendor/modernizr.js"></script>
+</head>
+<body>
     <header>
         <div class="row">
             <div class="large-12 columns">
-            <h1>CS 4464 Project : Assignment #3</h1>
-            <h4>categorizing food stuffs</h4>
+                <h1>CS 4464 Project : Assignment #3</h1>
+                <h4>categorizing food stuffs</h4>
             </div>
         </div>
     </header>
-    
+
     <section id="main-content">
         <div class="row">
             <div class="large-12 columns">
-      	        <div class="panel">
-	                <h3>We&rsquo;re going to try to import some food feeds! </h3>
-	                <p>We intent to import about three foodie feeds and then use text analysis software (AlchemyAPI) to categorize the foods for you.</p>          
-      	        </div>
+                <div class="panel">
+                    <p>
+                        Our goal was to illustrate how natural language processing can help people better understand content
+                        in context of big ideas. On this site, we imported three food recipe sites' rss feeds to analyze.
+                        The to make the aggregate content relatable and useful to the user, we used natural language processing
+                        tools to categorize the recipies in terms of breakfast, lunch and dinner. These are common things one looks for while
+                        flipping through a recipie book. 
+                    </p>
+                </div>
+                <p>Click an option to filter through the available recipies.</p>
             </div>
         </div>
     </section>
     <div class="row">
-        <div class="large-5 columns actionPanel">
+        <div class="large-4 columns actionPanel">
+            <div class="row">
+                <div class="column large-centered">
+                    <a href="#" class="medium button displayAll">Display All</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column large-centered">
+                    <a href="#" class="medium button breakfast">Breakfast</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column large-centered ">
+                    <a href="#" class="medium button lunch">Lunch</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column large-centered ">
+                    <a href="#" class="medium button dinner">Dinner</a>
+                </div>
+            </div>
 
         </div>
-        <div class="large-8 columns feedsPanel">
-            
+        <div class="large-8 columns allFeedsPanel active">
         </div>
-    </div> 
+        <div class="large-8 columns bPanel dormant">
+
+        </div>
+        <div class="large-8 columns lPanel dormant">
+
+        </div>
+        <div class="large-8 columns dPanel dormant">
+
+        </div>
+    </div>
 
     <div class="templates hide">
         <div class="panel entry">
             <h4 class="entryTitle"></h4>
             <p class="entryDate"></p>
             <p class="entryContent"></p>
-        </div> 
+            <a class="entryLink"></a>
+            <div class="entryTags bump">
+                <ul class="tags">
+                </ul>
+            </div>
+        </div>
+        
+        <li class="tagItem"></li>
     </div>
-      
-    <script src="js/foundation.min.js"></script>
+
+    <script type="text/javascript" src="js/foundation.min.js"></script>
     <script>
-      $(document).foundation();
+        $(document).foundation();
     </script>
-  </body>
+</body>
 </html>
