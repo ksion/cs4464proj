@@ -11,7 +11,6 @@ var feed5;
 // var feed5Entries;
 
 var allEntries = new Array();
-
 feed1 = new google.feeds.Feed("http://rss.allrecipes.com/daily.aspx?hubID=80");
 feed2 = new google.feeds.Feed("http://www.kraftfoods.com/rss/topRatedRecipes.aspx");
 feed3 = new google.feeds.Feed("http://www.food.com/rss");
@@ -23,106 +22,122 @@ feed2.setNumEntries(5);
 feed3.setNumEntries(5);
 feed4.setNumEntries(5);
 feed5.setNumEntries(5);
-    
+
+var breakfast_feed = new Array();
+var lunch_feed = new Array();
+var dinner_feed = new Array();
+
 load_all_feeds();
 
 window.onload = function () {
-    start_feed_load();
+    load_panels();
 }
 
-function start_feed_load() {
-    load_breakfast_feed();
-}
+function load_panels() {
+    allEntries.forEach(function (entry) {
+        var feedLink = entry.link;
+        $.ajax({
+            url: "http://api.embed.ly/1/extract",
+            data: {
+                key: "968ebde32bab42d7b5e679ecb09d0560",
+                url: feedLink,
+                words: 15,
+                format: "json"
+            },
+            crossDomain: true,
+            dataType: "json",
+            type: "GET",
+            success: function (data, status, jqXHR) {
+                var keywords = data.keywords;
+                var title = data.title;
 
-function load_breakfast_feed() {
-    allEntries.forEach(function(entry) {
-        var feedLink = encodeURIComponent(entry.link) {
-            $.ajax({
-                url: "http://api.embed.ly/1/extract",
-                headers: {
-                    'Access-Control-Allow-Origin', '*'
-                },
-                crossDomain: true,
-                data: {
-                    key : "968ebde32bab42d7b5e679ecb09d0560",
-                    words : 10,
-                    url : feedLink,
-                    format: json
-                },
-                dataType: "json",
-                success: function(data, status, jqXHR) {
-                    var keywords = data.keywords;
-                    alert(keywords);
+                if (keywords.length > 0 && title) {
+                    var words = Array();
+                    keywords.forEach(function (word) {
+                        words.push(word.name);
+                    });
+
+                    try_nlp_search(words, title, entry);
+                    try_tag_search(entry);
+                    try_title_search(entry);
                 }
-            });
-        }
+            }
+        });
     });
-    load_lunch_feed();
 }
 
-function load_lunch_feed() {
-    //do stuffs
-    load_dinner_feed();
+function add_entry_to_feed(entry, feed, panelSelector) {
+    if (feed.indexOf(entry) == -1) {
+        add_entry_to_panel(panelSelector, entry);
+        feed.push(entry);
+    }
 }
 
-function load_dinner_feed() {
+function try_nlp_search(words, title, entry) {
+    
+    words.forEach(function (word) {
+        if (breakfast_words.indexOf(word.toLowerCase()) != -1 || breakfast_words.indexOf(title.toLowerCase()) != -1) 
+            add_entry_to_feed(entry, breakfast_feed, ".bPanel");
 
+        if (lunch_words.indexOf(word.toLowerCase()) != -1 || lunch_words.indexOf(title.toLowerCase()) != -1) 
+            add_entry_to_feed(entry, lunch_feed, ".lPanel");
+
+        if (dinner_words.indexOf(word.toLowerCase()) != -1 || dinner_words.indexOf(title.toLowerCase()) != -1) 
+            add_entry_to_feed(entry, dinner_feed, ".dPanel");
+    });
+}
+function try_tag_search(entry) {
+    if (entry.categories.length > 0) {
+        var tags = entry.categories;
+
+        tags.forEach(function (tag) {
+            if (breakfast_words.indexOf(tag.toLowerCase())) 
+                add_entry_to_feed(entry, breakfast_feed, ".bPanel");
+            
+            if (lunch_words.indexOf(tag.toLowerCase())) 
+                add_entry_to_feed(entry, lunch_feed, ".lPanel");
+
+            if (dinner_words.indexOf(tag.toLowerCase()))
+                add_entry_to_feed(entry, dinner_feed, ".dPanel");
+        });
+    }
+}
+
+function try_title_search(entry) {
+    var title = entry.title;
+
+    if (breakfast_words.indexOf(title.toLowerCase())) 
+        add_entry_to_feed(entry, breakfast_feed, ".bPanel");
+
+    if (lunch_words.indexOf(title.toLowerCase()))
+        add_entry_to_feed(entry, lunch_feed, ".lPanel");
+
+    if (dinner_words.indexOf(title.toLowerCase()))
+        add_entry_to_feed(entry, dinner_feed, ".dPanel");
 }
 
 $(document).ready(function () {
 
     $(".displayAll").on("click", function (e) {
         e.preventDefault();
-        show_feed(".allFeedsPanel", this);
+        show_feed_panel(".allFeedsPanel", this);
     });
 
     $(".breakfast").on("click", function (e) {
         e.preventDefault();
-        show_feed(".bPanel", this);
+        show_feed_panel(".bPanel", this);
     });
 
     $(".lunch").on("click", function (e) {
         e.preventDefault();
-        show_feed(".lPanel", this);
+        show_feed_panel(".lPanel", this);
     });
 
     $(".dinner").on("click", function (e) {
         e.preventDefault();
-        show_feed(".dPanel", this);
+        show_feed_panel(".dPanel", this);
     });
 });
-
-function load_select_feed(panelSelector, words) {
-    if (panelSelector == ".bPanel") {
-        feed5Entries.forEach(function(entry) {
-            add_entry_to_panel(".bPanel", entry);
-        });
-    } else if (panelSelector == ".lPanel") {
-        feed1Entries.forEach(function(entry) {
-            add_entry_to_panel(".lPanel", entry);
-        });
-
-        feed2Entries.forEach(function(entry) {
-            add_entry_to_panel(".lPanel", entry);
-        });
-
-        feed3Entries.forEach(function(entry) {
-            add_entry_to_panel(".lPanel", entry);
-        });
-    } else {
-        feed4Entries.forEach(function(entry) {
-            add_entry_to_panel(".dPanel", entry);
-        });
-
-        feed1Entries.forEach(function(entry) {
-            add_entry_to_panel(".dPanel", entry);
-        });
-
-        feed3Entries.forEach(function(entry) {
-            add_entry_to_panel(".dPanel", entry);
-        });
-    }
-}
 
 function add_entry_to_panel(panelSelector, entry) {
     var entryTemplate = $(".entry", $(".templates")).clone();
@@ -149,72 +164,36 @@ function add_entry_to_panel(panelSelector, entry) {
     $(panelSelector).append(entryTemplate);
 }
 
-function show_feed(selector, highlightButton) {
-    unselect_all_buttons();
-    select_button(highlightButton);
-
-    var activePanel = $(".active");
-    $(activePanel).removeClass("active").addClass("dormant");
-    $(selector).removeClass("dormant").addClass("active");
-}
-
-function unselect_all_buttons() {
-    var buttons = $(".medium.button").toArray();
-    buttons.forEach(function (button) {
-        $(button).removeClass("success");
-    });
-}
-
-function select_button(button) {
-    unselect_all_buttons();
-    $(button).addClass("success");
-}
-
 function load_all_feeds(callback) {
     feed1.load(function (results) {
-        if (!results.error) {
-            var entries = results.feed.entries;
-            //feed1Entries = entries;
-            allEntries = allEntries.concat(entries);
-            display_feed_entries(entries);
-        }
+        load_complete_action(results);
     });
 
     feed2.load(function (results) {
-        if (!results.error) {
-            var entries = results.feed.entries;
-            //feed2Entries = entries;
-            allEntries = allEntries.concat(entries);
-            display_feed_entries(entries);
-        }
+        load_complete_action(results);
     });
 
     feed3.load(function (results) {
-        if (!results.error) {
-            var entries = results.feed.entries;
-            //feed3Entries = entries;
-            allEntries = allEntries.concat(entries);
-            display_feed_entries(entries);
-        }
+        load_complete_action(results);
     });
 
     feed4.load(function (results) {
-        if (!results.error) {
-            var entries = results.feed.entries;
-            //feed4Entries = entries;
-            allEntries = allEntries.concat(entries);
-            display_feed_entries(entries);
-        }
+        load_complete_action(results);
     });
 
     feed5.load(function (results) {
-        if (!results.error) {
-            var entries = results.feed.entries;
-            //feed5Entries = entries;
-            allEntries = allEntries.concat(entries);
-            display_feed_entries(entries);
-        }
+        load_complete_action(results);
     });
+}
+
+function load_complete_action(results) {
+    if (!results.error) {
+        var entries = results.feed.entries;
+        allEntries = allEntries.concat(entries);
+        display_feed_entries(entries);
+    } else {
+        alert("There was a problem!");
+    }
 }
 
 function display_feed_entries(entries) {
@@ -222,3 +201,25 @@ function display_feed_entries(entries) {
         add_entry_to_panel(".allFeedsPanel", entry);
     });
 }
+
+function show_feed_panel(selector, highlightButton) {
+    select_button(highlightButton);
+
+    var activePanel = $(".active");
+    $(activePanel).removeClass("active").addClass("dormant");
+    $(selector).removeClass("dormant").addClass("active");
+}
+
+function select_button(button) {
+    var buttons = $(".medium.button").toArray();
+    buttons.forEach(function (button) {
+        $(button).removeClass("success");
+    });
+    
+    $(button).addClass("success");
+}
+
+var breakfast_words = ['breakfast', 'pancakes', 'waffles', 'eggs', 'toast', 'yogurt', 'sausage', 'bacon', 'hash brown'];
+var lunch_words = ['lunch', 'quick', 'soup', 'salad', 'sandwich', 'beef', 'chicken', 'pizza'];
+var dinner_words = ['dinner', 'soup', 'salad', 'burgers', 'beef', 'chicken', 'fish', 'casserole', 'spaghetti'
+,'dessert'];
