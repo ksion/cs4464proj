@@ -121,15 +121,21 @@ function show_all_feeds() {
 }
 
 function show_breakfast_feeds() {
-
+    var activePanel = $(".active");
+    $(activePanel).removeClass("active").addClass("dormant");
+    $(".bPanel").removeClass("dormant").addClass("active");
 }
 
 function show_lunch_feeds() {
-
+    var activePanel = $(".active");
+    $(activePanel).removeClass("active").addClass("dormant");
+    $(".lPanel").removeClass("dormant").addClass("active");
 }
 
-function show_breakfast_feeds() {
-
+function show_dinner_feeds() {
+    var activePanel = $(".active");
+    $(activePanel).removeClass("active").addClass("dormant");
+    $(".dPanel").removeClass("dormant").addClass("active");
 }
 
 function unselect_all_buttons() {
