@@ -4,17 +4,13 @@ var feed3;
 var feed4;
 var feed5;
 
-var feed1Entries;
-var feed2Entries;
-var feed3Entries;
-var feed4Entries;
-var feed5Entries;
+// var feed1Entries;
+// var feed2Entries;
+// var feed3Entries;
+// var feed4Entries;
+// var feed5Entries;
 
 var allEntries = new Array();
-
-var breakfast_words = ['breakfast', 'pancakes', 'waffles', 'eggs', 'brunch', 'morning', 'bacon'];
-var lunch_words = ['lunch', 'sandwiches'];
-var dinner_words = ['dinner', 'casserole', 'burgers'];
 
 feed1 = new google.feeds.Feed("http://rss.allrecipes.com/daily.aspx?hubID=80");
 feed2 = new google.feeds.Feed("http://www.kraftfoods.com/rss/topRatedRecipes.aspx");
@@ -22,18 +18,55 @@ feed3 = new google.feeds.Feed("http://www.food.com/rss");
 feed4 = new google.feeds.Feed("http://feeds.feedburner.com/elise/simplyrecipes");
 feed5 = new google.feeds.Feed("http://www.food.com/rssapi.do?page_type=26&slug=breakfast");
 
-feed1.setNumEntries(4);
-feed2.setNumEntries(3);
-feed3.setNumEntries(3);
-feed4.setNumEntries(3);
+feed1.setNumEntries(5);
+feed2.setNumEntries(5);
+feed3.setNumEntries(5);
+feed4.setNumEntries(5);
 feed5.setNumEntries(5);
     
 load_all_feeds();
 
 window.onload = function () {
-    load_select_feed(".bPanel", breakfast_words);
-    load_select_feed(".lPanel", lunch_words);
-    load_select_feed(".dPanel", dinner_words);
+    start_feed_load();
+}
+
+function start_feed_load() {
+    load_breakfast_feed();
+}
+
+function load_breakfast_feed() {
+    allEntries.forEach(function(entry) {
+        var feedLink = encodeURIComponent(entry.link) {
+            $.ajax({
+                url: "http://api.embed.ly/1/extract",
+                headers: {
+                    'Access-Control-Allow-Origin', '*'
+                },
+                crossDomain: true,
+                data: {
+                    key : "968ebde32bab42d7b5e679ecb09d0560",
+                    words : 10,
+                    url : feedLink,
+                    format: json
+                },
+                dataType: "json",
+                success: function(data, status, jqXHR) {
+                    var keywords = data.keywords;
+                    alert(keywords);
+                }
+            });
+        }
+    });
+    load_lunch_feed();
+}
+
+function load_lunch_feed() {
+    //do stuffs
+    load_dinner_feed();
+}
+
+function load_dinner_feed() {
+
 }
 
 $(document).ready(function () {
@@ -60,7 +93,7 @@ $(document).ready(function () {
 });
 
 function load_select_feed(panelSelector, words) {
-        if (panelSelector == ".bPanel") {
+    if (panelSelector == ".bPanel") {
         feed5Entries.forEach(function(entry) {
             add_entry_to_panel(".bPanel", entry);
         });
@@ -141,7 +174,8 @@ function load_all_feeds(callback) {
     feed1.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
-            feed1Entries = entries;
+            //feed1Entries = entries;
+            allEntries = allEntries.concat(entries);
             display_feed_entries(entries);
         }
     });
@@ -149,7 +183,8 @@ function load_all_feeds(callback) {
     feed2.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
-            feed2Entries = entries;
+            //feed2Entries = entries;
+            allEntries = allEntries.concat(entries);
             display_feed_entries(entries);
         }
     });
@@ -157,7 +192,8 @@ function load_all_feeds(callback) {
     feed3.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
-            feed3Entries = entries;
+            //feed3Entries = entries;
+            allEntries = allEntries.concat(entries);
             display_feed_entries(entries);
         }
     });
@@ -165,7 +201,8 @@ function load_all_feeds(callback) {
     feed4.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
-            feed4Entries = entries;
+            //feed4Entries = entries;
+            allEntries = allEntries.concat(entries);
             display_feed_entries(entries);
         }
     });
@@ -173,7 +210,8 @@ function load_all_feeds(callback) {
     feed5.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
-            feed5Entries = entries;
+            //feed5Entries = entries;
+            allEntries = allEntries.concat(entries);
             display_feed_entries(entries);
         }
     });
