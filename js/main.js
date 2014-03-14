@@ -6,6 +6,10 @@ var feed3;
 var feed4;
 var feed5;
 
+var breakfast_words = ['breakfast', 'pancakes', 'waffles', 'eggs', 'brunch', 'morning', 'bacon'];
+var lunch_words = ['lunch', 'sandwiches'];
+var dinner_words = ['dinner', 'casserole', 'burgers'];
+
 feed1 = new google.feeds.Feed("http://rss.allrecipes.com/daily.aspx?hubID=80");
 feed2 = new google.feeds.Feed("http://www.kraftfoods.com/rss/topRatedRecipes.aspx");
 feed3 = new google.feeds.Feed("http://www.food.com/rss");
@@ -19,72 +23,47 @@ feed4.setNumEntries(3);
 feed5.setNumEntries(5);
     
 load_all_feeds();
+
 window.onload = function () {
-
-    load_breakfast_feeds();
-
+    load_select_feed(".bPanel", breakfast_words);
+    load_select_feed(".lPanel", lunch_words);
+    load_select_feed(".dPanel", dinner_words);
 }
+
 $(document).ready(function () {
 
     $(".displayAll").on("click", function (e) {
         e.preventDefault();
-        unselect_all_buttons();
-        show_all_feeds();
+        show_feed(".allFeedsPanel", this);
     });
 
     $(".breakfast").on("click", function (e) {
         e.preventDefault();
-        unselect_all_buttons();
-        select_button(this);
-        show_breakfast_feeds();
+        show_feed(".bPanel", this);
     });
 
     $(".lunch").on("click", function (e) {
         e.preventDefault();
-        unselect_all_buttons();
-        select_button(this);
-        show_lunch_feeds();
+        show_feed(".lPanel", this);
     });
 
     $(".dinner").on("click", function (e) {
         e.preventDefault();
-        unselect_all_buttons();
-        select_button(this);
-        show_dinner_feeds();
+        show_feed(".dPanel", this);
     });
-
 });
 
-function load_breakfast_feeds() {
+function load_select_feed(panelSelector, words) {
     var allEntries = $(".panel.entry", $(".allFeedsPanel")).toArray();
     allEntries.forEach(function (entry) {
         var link = $(entry).find(".entryLink");
-        var breakfast_words = ['breakfast', 'eggs', 'pancakes', 'waffles', 'toast', 'brunch', 'bacon'];
 
         $.embedly.extract(link.href, { key: '968ebde32bab42d7b5e679ecb09d0560' }).progress(function (obj) {
             obj.keywords = obj.keywords.slice(0, 5);
             var words = obj.keywords.toArray();
             words.forEach(function (word) {
-                if (breakfast_words.indexOf(word.name) >= 0) {
-                    add_entry_to_panel(".bPanel", entry);
-                }
-            });
-        });
-    });
-}
-
-function load_lunch_feeds() {
-    var allEntries = $(".panel.entry", $(".allFeedsPanel")).toArray();
-    allEntries.forEach(function (entry) {
-        var link = $(entry).find(".entryLink");
-        var lunch_words = ['lunch', 'sandwich', 'sandwiches', 'soup', 'burgers', 'pizza', 'chicken', 'salad', 'fish'];
-
-        $.embedly.extract(link.href, { key: '968ebde32bab42d7b5e679ecb09d0560' }).progress(function (obj) {
-            obj.keywords = obj.keywords.slice(0, 5);
-            var words = obj.keywords.toArray();
-            words.forEach(function (word) {
-                if (lunch_words.indexOf(word.name) >= 0) {
-                    add_entry_to_panel(".bPanel", entry);
+                if (words.indexOf(word.name) >= 0) {
+                    add_entry_to_panel(panelSelector, entry);
                 }
             });
         });
@@ -116,26 +95,13 @@ function add_entry_to_panel(panelSelector, entry) {
     $(panelSelector).append(entryTemplate);
 }
 
-function show_all_feeds() {
+function show_feed(selector, highlightButton) {
+    unselect_all_buttons();
+    select_button(highlightButton);
 
-}
-
-function show_breakfast_feeds() {
     var activePanel = $(".active");
     $(activePanel).removeClass("active").addClass("dormant");
-    $(".bPanel").removeClass("dormant").addClass("active");
-}
-
-function show_lunch_feeds() {
-    var activePanel = $(".active");
-    $(activePanel).removeClass("active").addClass("dormant");
-    $(".lPanel").removeClass("dormant").addClass("active");
-}
-
-function show_dinner_feeds() {
-    var activePanel = $(".active");
-    $(activePanel).removeClass("active").addClass("dormant");
-    $(".dPanel").removeClass("dormant").addClass("active");
+    $(selector).removeClass("dormant").addClass("active");
 }
 
 function unselect_all_buttons() {
@@ -146,6 +112,7 @@ function unselect_all_buttons() {
 }
 
 function select_button(button) {
+    unselect_all_buttons();
     $(button).addClass("success");
 }
 
@@ -158,6 +125,13 @@ function load_all_feeds(callback) {
     });
 
     feed2.load(function (results) {
+        if (!results.error) {
+            var entries = results.feed.entries;
+            display_feed_entries(entries);
+        }
+    });
+
+    feed3.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
             display_feed_entries(entries);
