@@ -1,10 +1,16 @@
-﻿var arrayPanels = [];
-
-var feed1;
+﻿var feed1;
 var feed2;
 var feed3;
 var feed4;
 var feed5;
+
+var feed1Entries;
+var feed2Entries;
+var feed3Entries;
+var feed4Entries;
+var feed5Entries;
+
+var allEntries = new Array();
 
 var breakfast_words = ['breakfast', 'pancakes', 'waffles', 'eggs', 'brunch', 'morning', 'bacon'];
 var lunch_words = ['lunch', 'sandwiches'];
@@ -54,20 +60,35 @@ $(document).ready(function () {
 });
 
 function load_select_feed(panelSelector, words) {
-    var allEntries = $(".panel.entry", $(".allFeedsPanel")).toArray();
-    allEntries.forEach(function (entry) {
-        var link = $(entry).find(".entryLink");
-
-        $.embedly.extract(link.href, { key: '968ebde32bab42d7b5e679ecb09d0560' }).progress(function (obj) {
-            obj.keywords = obj.keywords.slice(0, 5);
-            var words = obj.keywords.toArray();
-            words.forEach(function (word) {
-                if (words.indexOf(word.name) >= 0) {
-                    add_entry_to_panel(panelSelector, entry);
-                }
-            });
+        if (panelSelector == ".bPanel") {
+        feed5Entries.forEach(function(entry) {
+            add_entry_to_panel(".bPanel", entry);
         });
-    });
+    } else if (panelSelector == ".lPanel") {
+        feed1Entries.forEach(function(entry) {
+            add_entry_to_panel(".lPanel", entry);
+        });
+
+        feed2Entries.forEach(function(entry) {
+            add_entry_to_panel(".lPanel", entry);
+        });
+
+        feed3Entries.forEach(function(entry) {
+            add_entry_to_panel(".lPanel", entry);
+        });
+    } else {
+        feed4Entries.forEach(function(entry) {
+            add_entry_to_panel(".dPanel", entry);
+        });
+
+        feed1Entries.forEach(function(entry) {
+            add_entry_to_panel(".dPanel", entry);
+        });
+
+        feed3Entries.forEach(function(entry) {
+            add_entry_to_panel(".dPanel", entry);
+        });
+    }
 }
 
 function add_entry_to_panel(panelSelector, entry) {
@@ -120,6 +141,7 @@ function load_all_feeds(callback) {
     feed1.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
+            feed1Entries = entries;
             display_feed_entries(entries);
         }
     });
@@ -127,6 +149,7 @@ function load_all_feeds(callback) {
     feed2.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
+            feed2Entries = entries;
             display_feed_entries(entries);
         }
     });
@@ -134,6 +157,7 @@ function load_all_feeds(callback) {
     feed3.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
+            feed3Entries = entries;
             display_feed_entries(entries);
         }
     });
@@ -141,6 +165,7 @@ function load_all_feeds(callback) {
     feed4.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
+            feed4Entries = entries;
             display_feed_entries(entries);
         }
     });
@@ -148,6 +173,7 @@ function load_all_feeds(callback) {
     feed5.load(function (results) {
         if (!results.error) {
             var entries = results.feed.entries;
+            feed5Entries = entries;
             display_feed_entries(entries);
         }
     });
